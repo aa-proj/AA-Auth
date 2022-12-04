@@ -6,8 +6,8 @@ import request from "request";
 const app = express()
 
 const CLIENT_SECRET = process.env.CLIENT_SECRET
-const CLIENT_ID = process.env.CLIENT_SECRET
-const REDIRECT_URI = process.env.CLIENT_SECRET
+const CLIENT_ID = process.env.CLIENT_ID
+const REDIRECT_URI = process.env.REDIRECT_URI
 
 if (!CLIENT_SECRET) {
   throw new Error("SECRET NOT PROVIDED!")
@@ -70,7 +70,7 @@ app.post("/v1/refresh", async (req, res) => {
     res.send(response.body)
     return
   });
-  
+
 })
 
 app.listen(3000)
