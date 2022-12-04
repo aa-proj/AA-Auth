@@ -1,0 +1,12 @@
+version: "3.7"
+services:
+  node:
+    build: .
+    init: true
+    restart: always
+    ports:
+      - "127.0.0.1:5005:3000"
+    environment:
+      - CLIENT_SECRET=
+      - CLIENT_ID=
+      - REDIRECT_URI=
