@@ -1,19 +1,20 @@
 import express from "express"
 import FormData from "form-data";
 import axios from "axios";
+
 const app = express()
 
 const CLIENT_SECRET = process.env.CLIENT_SECRET
 const CLIENT_ID = process.env.CLIENT_SECRET
 const REDIRECT_URI = process.env.CLIENT_SECRET
 
-if(!CLIENT_SECRET) {
+if (!CLIENT_SECRET) {
   throw new Error("SECRET NOT PROVIDED!")
 }
 
-app.get('/v1/after-login', async (req,res) => {
+app.get('/v1/after-login', async (req, res) => {
   const code = req.query.code
-  if(!code) {
+  if (!code) {
     res.status(400).send("code query is not contain in your URL.")
     return
   }
@@ -26,13 +27,13 @@ app.get('/v1/after-login', async (req,res) => {
   formData.append("scope", "identify")
   formData.append("code", code)
 
-  const {data} = await axios.post("https://discordapp.com/api/oauth2/token", formData)
+  const {data} = await axios.post("https://discordapp.com/api/oauth2/token", formData, {headers:{...formData.getHeaders()}})
   res.send(data)
 })
 
 app.post("/v1/refresh", async (req, res) => {
   const refresh_token = req.query.refresh
-  if(!refresh_token) {
+  if (!refresh_token) {
     res.status(400).send("refresh token is not include your url.")
     return
   }
@@ -43,7 +44,7 @@ app.post("/v1/refresh", async (req, res) => {
   form.append("client_secret", CLIENT_SECRET)
   form.append("grant_type", "refresh_token")
 
-  const {data} = await axios.post("https://discordapp.com/api/oauth2/token", formData)
+  const {data} = await axios.post("https://discordapp.com/api/oauth2/token", formData, {headers:{...formData.getHeaders()}})
   res.send(data)
 })
 
