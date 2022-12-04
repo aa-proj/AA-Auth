@@ -38,7 +38,8 @@ app.get('/v1/after-login', async (req, res) => {
 
   request(options, function (error, response) {
     if (error) throw new Error(error);
-    res.send(response.body)
+    res.redirect(`http://localhost:58694/v1/auth-redirect?json=${response.body}`)
+    // res.send(response.body)
     return
   });
 })
@@ -67,7 +68,7 @@ app.post("/v1/refresh", async (req, res) => {
 
   request(options, function (error, response) {
     if (error) throw new Error(error);
-    res.send(response.body)
+    res.redirect(`http://localhost:58694/v1/auth-redirect?json=${response.body}`)
     return
   });
 
