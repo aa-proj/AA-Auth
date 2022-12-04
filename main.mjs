@@ -1,6 +1,7 @@
 import express from "express"
 import FormData from "form-data";
 import axios from "axios";
+import request from "request";
 
 const app = express()
 
@@ -19,16 +20,27 @@ app.get('/v1/after-login', async (req, res) => {
     return
   }
 
-  const formData = new FormData()
-  formData.append("client_id", CLIENT_ID)
-  formData.append("client_secret", CLIENT_SECRET)
-  formData.append("redirect_uri", REDIRECT_URI)
-  formData.append("grant_type", "authorization_code")
-  formData.append("scope", "identify")
-  formData.append("code", code)
+  const options = {
+    'method': 'POST',
+    'url': 'https://discordapp.com/api/oauth2/token',
+    'headers': {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    form: {
+      'code': code,
+      'redirect_uri': REDIRECT_URI,
+      'client_secret': CLIENT_SECRET,
+      'client_id': CLIENT_ID,
+      'grant_type': 'authorization_code',
+      'scope': 'identify'
+    }
+  };
 
-  const {data} = await axios.post("https://discordapp.com/api/oauth2/token", formData, {headers:{...formData.getHeaders()}})
-  res.send(data)
+  request(options, function (error, response) {
+    if (error) throw new Error(error);
+    res.send(response.body)
+    return
+  });
 })
 
 app.post("/v1/refresh", async (req, res) => {
@@ -38,14 +50,27 @@ app.post("/v1/refresh", async (req, res) => {
     return
   }
 
-  const form = new FormData()
-  form.append("refresh_token", refresh_token)
-  form.append("client_id", CLIENT_ID)
-  form.append("client_secret", CLIENT_SECRET)
-  form.append("grant_type", "refresh_token")
+  const options = {
+    'method': 'POST',
+    'url': 'https://discordapp.com/api/oauth2/token',
+    'headers': {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    form: {
+      'refresh_token': refresh_token,
+      'redirect_uri': REDIRECT_URI,
+      'client_secret': CLIENT_SECRET,
+      'client_id': CLIENT_ID,
+      'grant_type': 'refresh_token',
+    }
+  };
 
-  const {data} = await axios.post("https://discordapp.com/api/oauth2/token", formData, {headers:{...formData.getHeaders()}})
-  res.send(data)
+  request(options, function (error, response) {
+    if (error) throw new Error(error);
+    res.send(response.body)
+    return
+  });
+  
 })
 
 app.listen(3000)
